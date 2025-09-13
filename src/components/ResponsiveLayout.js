@@ -67,37 +67,18 @@ const ResponsiveLayout = ({
   
   if (isMobile) {
     return (
-      <div className={`h-screen flex flex-col ${className}`}>
+      <div className={`h-full flex flex-col ${className}`}>
         {/* Mobile Header */}
-        <div className="flex items-center justify-between p-4 bg-white border-b border-gray-200">
+        <div className="flex items-center justify-between p-3 bg-white border-b border-gray-200 min-h-[56px]">
           <div className="flex items-center space-x-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleLeftPanel}
-              className={`${isLeftPanelOpen ? 'text-coral-600' : 'text-gray-500'}`}
-            >
-              <Menu size={20} />
-            </Button>
-            <h1 className="text-lg font-semibold text-gray-800">
+            <h1 className="text-lg font-semibold text-gray-800 truncate">
               {activePanel === 'left' ? leftPanelTitle : rightPanelTitle}
             </h1>
-          </div>
-          
-          <div className="flex items-center space-x-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleRightPanel}
-              className={`${isRightPanelOpen ? 'text-coral-600' : 'text-gray-500'}`}
-            >
-              <Menu size={20} />
-            </Button>
           </div>
         </div>
         
         {/* Mobile Content */}
-        <div className="flex-1 relative overflow-hidden">
+        <div className="flex-1 relative overflow-hidden bg-gray-50">
           <AnimatePresence mode="wait">
             {isLeftPanelOpen && activePanel === 'left' && (
               <motion.div
@@ -106,9 +87,11 @@ const ResponsiveLayout = ({
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: -300, opacity: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="absolute inset-0 z-10"
+                className="absolute inset-0 z-10 overflow-y-auto"
               >
-                {leftPanel}
+                <div className="min-h-full">
+                  {leftPanel}
+                </div>
               </motion.div>
             )}
             
@@ -119,33 +102,35 @@ const ResponsiveLayout = ({
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: 300, opacity: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="absolute inset-0 z-10"
+                className="absolute inset-0 z-10 overflow-y-auto"
               >
-                {rightPanel}
+                <div className="min-h-full">
+                  {rightPanel}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
         
         {/* Mobile Navigation */}
-        <div className="flex items-center justify-center p-4 bg-white border-t border-gray-200">
-          <div className="flex items-center space-x-4">
+        <div className="flex items-center justify-center p-2 bg-white border-t border-gray-200 safe-area-inset-bottom">
+          <div className="flex items-center space-x-2 w-full max-w-xs">
             <Button
               variant={activePanel === 'left' ? 'primary' : 'ghost'}
               size="sm"
               onClick={() => handlePanelSwitch('left')}
-              className="flex items-center space-x-2"
+              className="flex-1 flex items-center justify-center space-x-2 py-3"
             >
-              <span>{leftPanelTitle}</span>
+              <span className="text-sm font-medium">{leftPanelTitle}</span>
             </Button>
             
             <Button
               variant={activePanel === 'right' ? 'primary' : 'ghost'}
               size="sm"
               onClick={() => handlePanelSwitch('right')}
-              className="flex items-center space-x-2"
+              className="flex-1 flex items-center justify-center space-x-2 py-3"
             >
-              <span>{rightPanelTitle}</span>
+              <span className="text-sm font-medium">{rightPanelTitle}</span>
             </Button>
           </div>
         </div>
