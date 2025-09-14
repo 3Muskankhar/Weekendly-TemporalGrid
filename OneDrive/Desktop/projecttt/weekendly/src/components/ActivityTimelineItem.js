@@ -214,7 +214,9 @@ const ActivityTimelineItem = ({
                     size="sm"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onDelete?.(activity);
+                      if (onDelete) {
+                        onDelete(activity);
+                      }
                     }}
                     className="w-12 h-12 p-0 hover:bg-red-100 hover:text-red-600"
                   >

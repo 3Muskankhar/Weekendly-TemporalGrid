@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import dynamic from "next/dynamic";
 import { motion } from 'framer-motion';
 import { Settings, BarChart3, Clock, Calendar, Share2, Download } from 'lucide-react';
-import { Button } from '@/components/ui';
+import { Button, CelebrationEffect } from '@/components/ui';
 import { 
   WeekendSchedule, 
   MoodTracker, 
@@ -73,7 +73,7 @@ const TimeSelectionModal = ({
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white rounded-2xl p-6 w-96 max-w-md shadow-xl"
+        className="bg-white rounded-2xl p-4 md:p-6 w-full max-w-sm md:max-w-md mx-4 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center space-x-3 mb-4">
@@ -280,6 +280,7 @@ const PlannerPageContent = () => {
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [showPlaces, setShowPlaces] = useState(false);
   const [userLocation, setUserLocation] = useState(null);
+  const [showCelebration, setShowCelebration] = useState(false);
   
   // Drag and drop state
   const [activeId, setActiveId] = useState(null);
@@ -598,16 +599,16 @@ const PlannerPageContent = () => {
       <MobileTouchOptimizer>
         <div className="h-screen bg-gradient-to-br from-coral-50 via-white to-teal-50">
           {/* Header */}
-          <header className="bg-white border-b border-gray-200 px-4 py-3">
+          <header className="bg-white border-b border-gray-200 px-3 md:px-4 py-2 md:py-3">
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-coral-500 to-teal-500 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">W</span>
+              <div className="flex items-center space-x-2 md:space-x-3">
+                <div className="w-7 h-7 md:w-8 md:h-8 bg-gradient-to-br from-coral-500 to-teal-500 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-xs md:text-sm">W</span>
                 </div>
-                <h1 className="text-xl font-bold text-gray-800">Weekendly</h1>
+                <h1 className="text-lg md:text-xl font-bold text-gray-800">Weekendly</h1>
               </div>
               
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1 md:space-x-2">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -632,26 +633,43 @@ const PlannerPageContent = () => {
                   <span>Analytics</span>
                 </Button>
                 
+                {/* Mobile PDF Export */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={generateSchedulePDF}
+                  disabled={isGeneratingPDF}
+                  className="md:hidden p-2"
+                >
+                  {isGeneratingPDF ? (
+                    <div className="w-4 h-4 border-2 border-coral-500 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Download size={18} />
+                  )}
+                </Button>
               </div>
             </div>
           </header>
           
           {/* Main Content */}
-          <div className="h-[calc(100vh-64px)]">
+          <div className="h-[calc(100vh-64px)] md:h-[calc(100vh-64px)]">
             <ResponsiveLayout
               leftPanel={
-                <div className="h-full flex flex-col">
+                <div className="h-full flex flex-col mobile-scroll-container">
                   <ActivityBrowser />
                 </div>
               }
               rightPanel={
-                <div className="h-full flex flex-col" data-schedule-container>
-                  <div className="px-6 py-3 text-sm text-gray-600">Weekend: {weekendDatesState.start || 'Sat'} → {weekendDatesState.end || 'Sun'}</div>
+                <div className="h-full flex flex-col mobile-scroll-container" data-schedule-container>
+                  <div className="px-4 md:px-6 py-2 md:py-3 text-xs md:text-sm text-gray-600 bg-white border-b border-gray-100">
+                    <span className="font-medium">Weekend:</span> {weekendDatesState.start || 'Sat'} → {weekendDatesState.end || 'Sun'}
+                  </div>
                   <WeekendSchedule weekendDates={{ start: weekendDatesState.start, end: weekendDatesState.end }} />
                 </div>
               }
               leftPanelTitle="Activities"
               rightPanelTitle="Schedule"
+              className="mobile-optimized"
             />
           </div>
           
@@ -698,6 +716,8 @@ const PlannerPageContent = () => {
                         if (vibeTarget) {
                           updateActivity(vibeTarget.activityId, vibeTarget.day, { mood: v });
                         }
+                        // Trigger celebration effect
+                        setShowCelebration(true);
                         setShowVibeModal(false);
                         setVibeTarget(null);
                       }}
@@ -797,6 +817,13 @@ const PlannerPageContent = () => {
             ) : null}
           </DragOverlay>
         </div>
+
+        {/* Celebration Effect */}
+        <CelebrationEffect
+          isVisible={showCelebration}
+          onComplete={() => setShowCelebration(false)}
+          duration={3000}
+        />
       </MobileTouchOptimizer>
     </DndContext>
   );
@@ -809,6 +836,7 @@ const PlannerPage = () => {
         <div className="w-8 h-8 border-2 border-coral-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
         <p className="text-gray-600">Loading planner...</p>
       </div>
+
     </div>}>
       <PlannerPageContent />
     </Suspense>

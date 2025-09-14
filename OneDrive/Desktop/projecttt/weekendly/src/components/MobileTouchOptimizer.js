@@ -64,7 +64,37 @@ const MobileTouchOptimizer = ({ children }) => {
   }, [isTouchDevice]);
   
   return (
-    <div className={`mobile-touch-optimizer ${isTouchDevice ? 'touch-device' : 'no-touch'}`}>
+    <div className={`mobile-touch-optimizer ${isTouchDevice ? 'touch-device' : 'no-touch'} h-full`}>
+      <style jsx global>{`
+        .mobile-optimized {
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior: contain;
+        }
+        
+        .touch-device {
+          touch-action: manipulation;
+        }
+        
+        .touch-device .draggable-item {
+          touch-action: none;
+        }
+        
+        @media (max-width: 768px) {
+          .mobile-touch-optimizer {
+            min-height: 100vh;
+            min-height: 100dvh;
+          }
+          
+          .safe-area-inset-bottom {
+            padding-bottom: env(safe-area-inset-bottom);
+          }
+          
+          .mobile-scroll-container {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
+          }
+        }
+      `}</style>
       {children}
     </div>
   );

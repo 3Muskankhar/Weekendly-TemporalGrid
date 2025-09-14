@@ -35,6 +35,10 @@ const WeekendSchedule = ({ weekendDates }) => {
   // Local state
   const [showTimeSlots, setShowTimeSlots] = useState(true);
   const [expandedActivity, setExpandedActivity] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [activityToDelete, setActivityToDelete] = useState(null);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [celebrationMood, setCelebrationMood] = useState('happy');
   
   // Get activities for the selected day
   const dayActivities = getDayActivities(selectedDay);
@@ -124,9 +128,8 @@ const WeekendSchedule = ({ weekendDates }) => {
   };
   
   const handleDeleteActivity = (activity) => {
-    if (confirm(`Are you sure you want to remove "${activity.name}" from your schedule?`)) {
-      removeActivity(activity.id, selectedDay);
-    }
+    // Direct delete without confirmation for better UX
+    removeActivity(activity.id, selectedDay);
   };
   
   const handleToggleStatus = (activity, newStatus = null) => {
@@ -143,16 +146,17 @@ const WeekendSchedule = ({ weekendDates }) => {
   };
   
   return (
-    <div className="h-full flex flex-col bg-white rounded-2xl shadow-sm border border-gray-200">
+    <div className="h-full flex flex-col bg-white md:rounded-2xl md:shadow-sm md:border md:border-gray-200 overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold text-gray-800">Weekend Schedule{weekendDates?.start && weekendDates?.end ? ` • ${weekendDates.start} → ${weekendDates.end}` : ''}</h2>
+      <div className="p-3 md:p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between mb-3 md:mb-4">
+          <h2 className="text-xl md:text-2xl font-bold text-gray-800">Weekend Schedule{weekendDates?.start && weekendDates?.end ? ` • ${weekendDates.start} → ${weekendDates.end}` : ''}</h2>
           <div className="flex items-center space-x-2">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowTimeSlots(!showTimeSlots)}
+              className="p-2"
             >
               <Clock size={16} />
             </Button>
@@ -202,7 +206,7 @@ const WeekendSchedule = ({ weekendDates }) => {
       </div>
       
       {/* Timeline */}
-      <div className="flex-1 overflow-y-auto p-6">
+      <div className="flex-1 overflow-y-auto p-3 md:p-6">
         <DroppableTimeline
           day={selectedDay}
           isEmpty={dayActivities.length === 0}
@@ -254,7 +258,7 @@ const WeekendSchedule = ({ weekendDates }) => {
       </div>
       
       {/* Footer */}
-      <div className="p-6 border-t border-gray-200 bg-gray-50">
+      <div className="p-3 md:p-6 border-t border-gray-200 bg-gray-50">
         <div className="flex items-center justify-between text-sm text-gray-600">
           <span>
             {selectedDay.charAt(0).toUpperCase() + selectedDay.slice(1)} Schedule
