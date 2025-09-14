@@ -128,8 +128,8 @@ const WeekendSchedule = ({ weekendDates }) => {
   };
   
   const handleDeleteActivity = (activity) => {
-    setShowDeleteConfirm(true);
-    setActivityToDelete(activity);
+    // Direct delete without confirmation for better UX
+    removeActivity(activity.id, selectedDay);
   };
   
   const handleToggleStatus = (activity, newStatus = null) => {
