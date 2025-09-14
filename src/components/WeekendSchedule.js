@@ -35,6 +35,10 @@ const WeekendSchedule = ({ weekendDates }) => {
   // Local state
   const [showTimeSlots, setShowTimeSlots] = useState(true);
   const [expandedActivity, setExpandedActivity] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [activityToDelete, setActivityToDelete] = useState(null);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [celebrationMood, setCelebrationMood] = useState('happy');
   
   // Get activities for the selected day
   const dayActivities = getDayActivities(selectedDay);
@@ -124,9 +128,8 @@ const WeekendSchedule = ({ weekendDates }) => {
   };
   
   const handleDeleteActivity = (activity) => {
-    if (confirm(`Are you sure you want to remove "${activity.name}" from your schedule?`)) {
-      removeActivity(activity.id, selectedDay);
-    }
+    setShowDeleteConfirm(true);
+    setActivityToDelete(activity);
   };
   
   const handleToggleStatus = (activity, newStatus = null) => {

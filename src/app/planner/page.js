@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import dynamic from "next/dynamic";
 import { motion } from 'framer-motion';
 import { Settings, BarChart3, Clock, Calendar, Share2, Download } from 'lucide-react';
-import { Button } from '@/components/ui';
+import { Button, CelebrationEffect } from '@/components/ui';
 import { 
   WeekendSchedule, 
   MoodTracker, 
@@ -280,6 +280,7 @@ const PlannerPageContent = () => {
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [showPlaces, setShowPlaces] = useState(false);
   const [userLocation, setUserLocation] = useState(null);
+  const [showCelebration, setShowCelebration] = useState(false);
   
   // Drag and drop state
   const [activeId, setActiveId] = useState(null);
@@ -715,6 +716,8 @@ const PlannerPageContent = () => {
                         if (vibeTarget) {
                           updateActivity(vibeTarget.activityId, vibeTarget.day, { mood: v });
                         }
+                        // Trigger celebration effect
+                        setShowCelebration(true);
                         setShowVibeModal(false);
                         setVibeTarget(null);
                       }}
@@ -814,6 +817,13 @@ const PlannerPageContent = () => {
             ) : null}
           </DragOverlay>
         </div>
+
+        {/* Celebration Effect */}
+        <CelebrationEffect
+          isVisible={showCelebration}
+          onComplete={() => setShowCelebration(false)}
+          duration={3000}
+        />
       </MobileTouchOptimizer>
     </DndContext>
   );
@@ -826,6 +836,7 @@ const PlannerPage = () => {
         <div className="w-8 h-8 border-2 border-coral-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
         <p className="text-gray-600">Loading planner...</p>
       </div>
+
     </div>}>
       <PlannerPageContent />
     </Suspense>
